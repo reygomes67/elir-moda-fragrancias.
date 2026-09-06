@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Elir - Moda & Fragrâncias: curadoria de moda feminina e perfumes para cada momento." />
+  <title>ELIR | Moda & Fragrâncias</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { ink: '#332b27', sand: '#f7f1e9', amber: '#b8753a', blush: '#ead7ce' },
+          fontFamily: { display: ['Cormorant Garamond', 'serif'], sans: ['Manrope', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+   <link rel="preconnect" href="https://images.unsplash.com" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-sand text-ink">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-sand/90 backdrop-blur-md">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-10" aria-label="Navegação principal">
+      <a href="#inicio" class="font-display text-2xl font-semibold tracking-[0.18em]" aria-label="ELIR, voltar ao início">ELIR</a>
+      <div class="hidden items-center gap-8 text-xs font-semibold uppercase tracking-[0.18em] md:flex">
+        <a class="nav-link" href="#curadoria">Curadoria</a>
+        <a class="nav-link" href="#provador">Provador virtual</a>
+        <a class="nav-link" href="#quiz">Quiz olfativo</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#curadoria" class="button-outline hidden px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] sm:block">Explorar</a>
+        <button id="cart-toggle" class="button-primary relative px-4 py-2 text-xs font-bold uppercase tracking-[0.12em]" aria-label="Abrir carrinho de compras" aria-controls="cart-drawer" aria-expanded="false">Carrinho <span id="cart-count" class="ml-1 inline-flex min-w-5 items-center justify-center rounded-full bg-amber px-1.5 py-0.5 text-[10px] text-white">0</span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero-shell mx-auto grid max-w-7xl gap-10 px-5 pb-20 pt-36 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:px-10 lg:pt-44">
+      <div class="hero-copy max-w-2xl">
+        <p class="eyebrow mb-5">Estilo que permanece</p>
+        <h1 class="font-display text-6xl font-semibold leading-[0.88] tracking-tight sm:text-8xl">Vista sua<br /><em>essência.</em></h1>
+        <p class="mt-8 max-w-md text-base leading-7 text-ink/70">Uma curadoria íntima de roupas e fragrâncias para mulheres que fazem do cotidiano uma assinatura.</p>
+        <a href="#curadoria" class="button-primary mt-8 inline-flex items-center gap-3 px-6 py-4 text-xs font-bold uppercase tracking-[0.14em]">Conheça a curadoria <span aria-hidden="true">↘</span></a>
+      </div>
+      <div class="hero-art relative min-h-[25rem] overflow-hidden sm:min-h-[31rem]" aria-label="Composição editorial em tons de âmbar, bege e branco" role="img">
+        <div class="art-sun"></div><div class="art-arch"></div><div class="art-bottle"></div><div class="art-fabric"></div>
+        <span class="absolute bottom-5 left-5 z-10 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">Coleção 01 / 2025</span>
+      </div>
+    </section>
+
+    <section id="curadoria" class="border-y border-ink/10 bg-white/55 px-5 py-20 lg:px-10">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div><p class="eyebrow mb-3">Escolhas ELIR</p><h2 class="font-display text-5xl font-semibold">Feito para o seu agora.</h2></div>
+          <p id="results-count" class="text-sm text-ink/55">6 peças selecionadas</p>
+        </div>
+        <div class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+          <button class="filter-button is-active" data-category="Todos">Todos</button>
+          <button class="filter-button" data-category="Moda">Moda & Roupas</button>
+          <button class="filter-button" data-category="Perfumaria">Fragrâncias</button>
+        </div>
+        <div id="product-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="provador" class="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[0.75fr_1.25fr] lg:px-10">
+      <div><p class="eyebrow mb-3">01 / Medidas</p><h2 class="font-display text-5xl font-semibold leading-none">Seu corpo,<br /><em>seu caimento.</em></h2><p class="mt-5 max-w-sm text-sm leading-6 text-ink/65">Conte um pouco sobre você e encontre a numeração mais confortável para começar.</p></div>
+      <div class="soft-panel p-6 sm:p-9">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="field-label">Busto <span>cm</span><input id="bust" class="field-input" type="number" min="70" max="150" placeholder="Ex.: 92" /></label>
+          <label class="field-label">Cintura <span>cm</span><input id="waist" class="field-input" type="number" min="55" max="140" placeholder="Ex.: 74" /></label>
+        </div>
+        <div id="size-result" class="mt-7 hidden border-t border-ink/10 pt-6" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="bg-ink px-5 py-20 text-sand lg:px-10">
+      <div class="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
+        <div><p class="eyebrow mb-3 text-amber-200">02 / Personalidade</p><h2 class="font-display text-5xl font-semibold leading-none">Qual é a sua<br /><em>nota de hoje?</em></h2><p class="mt-5 max-w-sm text-sm leading-6 text-sand/60">Duas escolhas e uma recomendação pensada para o seu momento.</p></div>
+        <div class="space-y-8">
+          <fieldset><legend class="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-sand/60">Família olfativa</legend><div class="choice-grid"><label><input type="radio" name="family" value="Floral" checked /><span>Floral</span></label><label><input type="radio" name="family" value="Amadeirada" /><span>Amadeirada</span></label><label><input type="radio" name="family" value="Cítrica" /><span>Cítrica</span></label><label><input type="radio" name="family" value="Oriental" /><span>Oriental</span></label></div></fieldset>
+          <fieldset><legend class="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-sand/60">Ocasião</legend><div class="choice-grid"><label><input type="radio" name="occasion" value="Dia a dia" checked /><span>Dia a dia</span></label><label><input type="radio" name="occasion" value="Encontro" /><span>Encontro</span></label><label><input type="radio" name="occasion" value="Trabalho" /><span>Trabalho</span></label><label><input type="radio" name="occasion" value="Celebração" /><span>Celebração</span></label></div></fieldset>
+          <div id="quiz-result" class="border-l border-amber-400 pl-5 text-sm leading-6 text-sand/75" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-20 text-center lg:px-10"><p class="eyebrow mb-4">Pronta para escolher?</p><h2 class="font-display text-5xl font-semibold">A sua próxima assinatura<br /><em>começa aqui.</em></h2><button id="whatsapp-button" class="button-primary mt-8 px-7 py-4 text-xs font-bold uppercase tracking-[0.14em]">Enviar pedido pelo WhatsApp <span aria-hidden="true">↗</span></button></section>
+  </main>
+  <div id="cart-overlay" class="fixed inset-0 z-[60] hidden bg-ink/40" aria-hidden="true"></div>
+  <aside id="cart-drawer" class="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md translate-x-full flex-col bg-sand shadow-2xl transition-transform duration-300" aria-label="Carrinho de compras" aria-hidden="true">
+    <div class="flex items-center justify-between border-b border-ink/10 px-6 py-5">
+      <div><p class="eyebrow">Sua seleção</p><h2 class="font-display text-4xl font-semibold">Carrinho</h2></div>
+      <button id="cart-close" class="button-outline flex h-10 w-10 items-center justify-center text-xl" aria-label="Fechar carrinho">×</button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto px-6 py-5" aria-live="polite"></div>
+    <div class="border-t border-ink/10 px-6 py-6">
+      <div class="mb-5 space-y-3">
+        <div class="flex gap-2"><label class="sr-only" for="coupon-input">Cupom de desconto</label><input id="coupon-input" class="field-input !mt-0 !py-1 text-base" type="text" placeholder="Cupom de desconto" autocomplete="off" /><button id="coupon-apply" class="button-outline shrink-0 px-3 text-[10px] font-bold uppercase tracking-[.1em]">Aplicar</button></div>
+        <p id="coupon-feedback" class="min-h-4 text-xs" aria-live="polite"></p>
+      </div>
+      <div class="mb-5 space-y-2 border-t border-ink/10 pt-4 text-sm"><div class="flex justify-between text-ink/60"><span>Subtotal</span><span id="cart-subtotal">R$ 0,00</span></div><div class="flex justify-between text-ink/60"><span>Desconto <span id="cart-coupon-label"></span></span><span id="cart-discount">- R$ 0,00</span></div><div class="flex items-center justify-between border-t border-ink/10 pt-3"><span class="text-xs font-bold uppercase tracking-[0.14em] text-ink/60">Total final</span><strong id="cart-total" class="font-display text-3xl">R$ 0,00</strong></div></div>
+      <button id="cart-whatsapp" class="button-primary w-full px-6 py-4 text-xs font-bold uppercase tracking-[0.14em]">Enviar pedido pelo WhatsApp <span aria-hidden="true">↗</span></button>
+    </div>
+  </aside>
+  <footer class="border-t border-ink/10 px-5 py-7 text-center text-xs text-ink/55 lg:px-10"><span class="font-display text-lg font-semibold tracking-[0.16em] text-ink">ELIR</span><span class="mx-3">·</span>Moda & Fragrâncias · Feito para você</footer>
+  <script src="script.js"></script>
+</body>
+</html>

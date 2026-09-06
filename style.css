@@ -1,0 +1,42 @@
+:root { --ink: #332b27; --amber: #b8753a; --sand: #f7f1e9; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Manrope', sans-serif; }
+.font-display { font-family: 'Cormorant Garamond', serif; }
+.nav-link { position: relative; color: rgb(51 43 39 / 0.68); transition: color .2s ease; }
+.nav-link:hover { color: var(--ink); }
+.nav-link::after { background: var(--amber); bottom: -7px; content: ''; height: 1px; left: 0; position: absolute; transform: scaleX(0); transform-origin: left; transition: transform .2s ease; width: 100%; }
+.nav-link:hover::after { transform: scaleX(1); }
+.eyebrow { color: var(--amber); font-size: .68rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.button-primary, .button-outline { transition: background .2s ease, color .2s ease, transform .2s ease; }
+.button-primary { background: var(--ink); color: var(--sand); }
+.button-primary:hover { background: var(--amber); transform: translateY(-2px); }
+.button-outline { border: 1px solid rgb(51 43 39 / 0.35); }
+.button-outline:hover { background: var(--ink); color: var(--sand); }
+.hero-shell { min-height: 720px; }
+.hero-art { background: #d5b59b; }
+.art-sun { background: #e8c76c; border-radius: 999px; height: 48%; left: 23%; position: absolute; top: 12%; width: 54%; }
+.art-arch { border: 25px solid #f8f2e9; border-bottom: 0; border-radius: 220px 220px 0 0; height: 67%; left: 10%; position: absolute; top: 28%; width: 80%; }
+.art-bottle { background: linear-gradient(110deg, #a86434, #e2b66d 58%, #85502c); border-radius: 12% 12% 28% 28%; bottom: 6%; box-shadow: 16px 22px 30px #75432645; height: 44%; left: 39%; position: absolute; width: 22%; z-index: 2; }
+.art-bottle::before { background: #e7d4ae; content: ''; height: 18%; left: 28%; position: absolute; top: -14%; width: 44%; }
+.art-fabric { background: #f7f1e9; border-radius: 50% 50% 0 0; bottom: -12%; height: 34%; position: absolute; right: -5%; transform: rotate(-14deg); width: 62%; }
+.soft-panel { background: rgb(255 255 255 / .6); border: 1px solid rgb(51 43 39 / .1); }
+.field-label { color: rgb(51 43 39 / .65); font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.field-label span { float: right; font-weight: 400; letter-spacing: 0; }
+.field-input { background: transparent; border: 0; border-bottom: 1px solid rgb(51 43 39 / .3); display: block; font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; margin-top: .8rem; outline: none; padding: .35rem 0; width: 100%; }
+.field-input:focus { border-color: var(--amber); }
+.filter-button { border: 1px solid rgb(51 43 39 / .18); font-size: .7rem; font-weight: 700; letter-spacing: .1em; padding: .75rem 1rem; text-transform: uppercase; transition: all .2s ease; }
+.filter-button:hover, .filter-button.is-active { background: var(--ink); border-color: var(--ink); color: var(--sand); }
+.product-card { background: #fff; animation: rise .5s ease both; }
+.product-visual { aspect-ratio: 1 / 1.08; overflow: hidden; position: relative; }
+.product-visual::after { background: rgb(255 255 255 / .2); content: ''; inset: 0; position: absolute; }
+.product-visual.moda { background: linear-gradient(145deg, #d9c3b3, #a27b65); }
+.product-visual.perfumaria { background: linear-gradient(145deg, #d6b672, #9f5c35); }
+.product-icon { color: #fff8ed; font-family: 'Cormorant Garamond', serif; font-size: 5rem; left: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); z-index: 1; }
+.product-tag { background: rgb(255 255 255 / .8); color: var(--ink); font-size: .6rem; font-weight: 700; letter-spacing: .12em; padding: .45rem .6rem; position: absolute; right: .8rem; text-transform: uppercase; top: .8rem; z-index: 2; }
+.choice-grid { display: flex; flex-wrap: wrap; gap: .6rem; }
+.choice-grid label input { position: absolute; opacity: 0; }
+.choice-grid label span { border: 1px solid rgb(247 241 233 / .25); color: rgb(247 241 233 / .72); cursor: pointer; display: block; font-size: .75rem; padding: .75rem 1rem; transition: all .2s ease; }
+.choice-grid label input:checked + span, .choice-grid label span:hover { background: var(--amber); border-color: var(--amber); color: white; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 640px) { .hero-shell { min-height: auto; } .hero-art { min-height: 22rem; } }
