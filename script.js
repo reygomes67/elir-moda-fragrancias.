@@ -26,8 +26,10 @@ const cartCouponLabel = document.querySelector('#cart-coupon-label');
 const couponInput = document.querySelector('#coupon-input');
 const couponFeedback = document.querySelector('#coupon-feedback');
 const sortSelect = document.querySelector('#sort-select');
+const productSearch = document.querySelector('#product-search');
 let appliedCoupon = '';
 let activeSort = 'default';
+let activeSearch = '';
 
 const coupons = { ELIR10: 0.1 };
 const favorites = new Set(JSON.parse(localStorage.getItem('elir-favorites') || '[]'));
@@ -40,13 +42,16 @@ function getCheckoutTotals() {
 }
 
 function renderProducts(category = 'Todos') {
-  const visibleProducts = (category === 'Todos' ? [...products] : products.filter((product) => product.category === category)).sort((firstProduct, secondProduct) => {
+  const visibleProducts = (category === 'Todos' ? [...products] : products.filter((product) => product.category === category)).filter((product) => {
+    const searchableText = `${product.name} ${product.category} ${product.description}`.toLowerCase();
+    return searchableText.includes(activeSearch);
+  }).sort((firstProduct, secondProduct) => {
     if (activeSort === 'price-asc') return firstProduct.price - secondProduct.price;
     if (activeSort === 'price-desc') return secondProduct.price - firstProduct.price;
     return 0;
   });
   resultsCount.textContent = `${visibleProducts.length} ${visibleProducts.length === 1 ? 'peça selecionada' : 'peças selecionadas'}`;
-  productGrid.innerHTML = visibleProducts.map((product, index) => `
+  productGrid.innerHTML = visibleProducts.length ? visibleProducts.map((product, index) => `
     <article class="product-card" style="animation-delay: ${index * 60}ms">
       <div class="product-visual ${product.category.toLowerCase()}">
         <img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'" />
@@ -55,7 +60,7 @@ function renderProducts(category = 'Todos') {
         <button class="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center bg-white/90 text-xl text-amber shadow-sm transition hover:scale-110" data-favorite="${product.name}" aria-label="${favorites.has(product.name) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}: ${product.name}" aria-pressed="${favorites.has(product.name)}">${favorites.has(product.name) ? '♥' : '♡'}</button>
       </div>
       <div class="p-5"><div class="mb-3 flex items-start justify-between gap-3"><h3 class="font-display text-3xl font-semibold leading-none">${product.name}</h3><div class="text-right"><strong class="block whitespace-nowrap text-sm">${money.format(product.price)}</strong>${product.compareAt ? `<del class="text-xs text-ink/40">${money.format(product.compareAt)}</del>` : ''}</div></div><p class="text-sm leading-6 text-ink/60">${product.description}</p><button class="button-primary mt-5 flex w-full items-center justify-between px-4 py-3 text-[10px] font-bold uppercase tracking-[.13em]" data-add="${product.name}"><span>${cart.has(product.name) ? 'No carrinho ✓' : 'Adicionar ao pedido'}</span><span aria-hidden="true">${cart.has(product.name) ? '✓' : '+'}</span></button></div>
-    </article>`).join('');
+    </article>`).join('') : '<div class="col-span-full border border-dashed border-ink/20 px-6 py-12 text-center"><p class="font-display text-3xl">Nenhuma peça encontrada.</p><p class="mt-2 text-sm text-ink/60">Tente outro nome ou explore todas as categorias.</p></div>';
 }
 
 function saveFavorites() {
@@ -157,6 +162,10 @@ document.querySelectorAll('.filter-button').forEach((button) => button.addEventL
 }));
 sortSelect.addEventListener('change', () => {
   activeSort = sortSelect.value;
+  renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
+});
+productSearch.addEventListener('input', () => {
+  activeSearch = productSearch.value.trim().toLowerCase();
   renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
 });
 document.querySelectorAll('.field-input').forEach((input) => input.addEventListener('input', calculateSize));

@@ -10,7 +10,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: { ink: '#332b27', sand: '#f7f1e9', amber: '#b8753a', blush: '#ead7ce' },
+          colors: { ink: '#332b27', sand: '#faf5ed', cream: '#fffaf4', amber: '#b8873e', emerald: '#16845b', lavender: '#e5d8eb', blush: '#ead7ce' },
           fontFamily: { display: ['Cormorant Garamond', 'serif'], sans: ['Manrope', 'sans-serif'] }
         }
       }
@@ -59,6 +59,7 @@
           <div><p class="eyebrow mb-3">Escolhas ELIR</p><h2 class="font-display text-5xl font-semibold">Feito para o seu agora.</h2></div>
           <p id="results-count" class="text-sm text-ink/55">6 peças selecionadas</p>
         </div>
+        <div class="mb-4 flex max-w-xl items-center border-b border-ink/25 bg-white/40 px-3"><span class="mr-3 text-lg text-amber" aria-hidden="true">⌕</span><label class="sr-only" for="product-search">Buscar produto</label><input id="product-search" class="w-full bg-transparent py-3 text-sm outline-none placeholder:text-ink/45" type="search" placeholder="Buscar por nome, categoria ou descrição" autocomplete="off" /></div>
         <div class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
           <button class="filter-button is-active" data-category="Todos">Todos</button>
           <button class="filter-button" data-category="Moda">Moda & Roupas</button>
