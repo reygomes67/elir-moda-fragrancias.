@@ -27,9 +27,16 @@ const couponInput = document.querySelector('#coupon-input');
 const couponFeedback = document.querySelector('#coupon-feedback');
 const sortSelect = document.querySelector('#sort-select');
 const productSearch = document.querySelector('#product-search');
+const fragranceShowcase = document.querySelector('#fragrance-showcase');
+const fragranceViewport = document.querySelector('#fragrance-viewport');
+const fragranceTrack = document.querySelector('#fragrance-track');
+const fragrancePrev = document.querySelector('#fragrance-prev');
+const fragranceNext = document.querySelector('#fragrance-next');
+const fragranceStatus = document.querySelector('#fragrance-status');
 let appliedCoupon = '';
 let activeSort = 'default';
 let activeSearch = '';
+let activeCategory = 'Todos';
 
 const coupons = { ELIR10: 0.1 };
 const favorites = new Set(JSON.parse(localStorage.getItem('elir-favorites') || '[]'));
@@ -41,8 +48,8 @@ function getCheckoutTotals() {
   return { subtotal, discount, shipping, total: subtotal - discount + shipping };
 }
 
-function renderProducts(category = 'Todos') {
-  const visibleProducts = (category === 'Todos' ? [...products] : products.filter((product) => product.category === category)).filter((product) => {
+function getVisibleProducts(category = 'Todos') {
+  return (category === 'Todos' ? [...products] : products.filter((product) => product.category === category)).filter((product) => {
     const searchableText = `${product.name} ${product.category} ${product.description}`.toLowerCase();
     return searchableText.includes(activeSearch);
   }).sort((firstProduct, secondProduct) => {
@@ -50,8 +57,10 @@ function renderProducts(category = 'Todos') {
     if (activeSort === 'price-desc') return secondProduct.price - firstProduct.price;
     return 0;
   });
-  resultsCount.textContent = `${visibleProducts.length} ${visibleProducts.length === 1 ? 'peça selecionada' : 'peças selecionadas'}`;
-  productGrid.innerHTML = visibleProducts.length ? visibleProducts.map((product, index) => `
+}
+
+function productCardMarkup(product, index) {
+  return `
     <article class="product-card" style="animation-delay: ${index * 60}ms">
       <div class="product-visual ${product.category.toLowerCase()}">
         <img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'" />
@@ -60,7 +69,31 @@ function renderProducts(category = 'Todos') {
         <button class="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center bg-white/90 text-xl text-amber shadow-sm transition hover:scale-110" data-favorite="${product.name}" aria-label="${favorites.has(product.name) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}: ${product.name}" aria-pressed="${favorites.has(product.name)}">${favorites.has(product.name) ? '♥' : '♡'}</button>
       </div>
       <div class="p-5"><div class="mb-3 flex items-start justify-between gap-3"><h3 class="font-display text-3xl font-semibold leading-none">${product.name}</h3><div class="text-right"><strong class="block whitespace-nowrap text-sm">${money.format(product.price)}</strong>${product.compareAt ? `<del class="text-xs text-ink/40">${money.format(product.compareAt)}</del>` : ''}</div></div><p class="text-sm leading-6 text-ink/60">${product.description}</p><button class="button-primary mt-5 flex w-full items-center justify-between px-4 py-3 text-[10px] font-bold uppercase tracking-[.13em]" data-add="${product.name}"><span>${cart.has(product.name) ? 'No carrinho ✓' : 'Adicionar ao pedido'}</span><span aria-hidden="true">${cart.has(product.name) ? '✓' : '+'}</span></button></div>
-    </article>`).join('') : '<div class="col-span-full border border-dashed border-ink/20 px-6 py-12 text-center"><p class="font-display text-3xl">Nenhuma peça encontrada.</p><p class="mt-2 text-sm text-ink/60">Tente outro nome ou explore todas as categorias.</p></div>';
+    </article>`;
+}
+
+function updateFragranceControls() {
+  const hasOverflow = fragranceViewport.scrollWidth > fragranceViewport.clientWidth + 2;
+  fragrancePrev.disabled = !hasOverflow || fragranceViewport.scrollLeft <= 2;
+  fragranceNext.disabled = !hasOverflow || fragranceViewport.scrollLeft + fragranceViewport.clientWidth >= fragranceViewport.scrollWidth - 2;
+}
+
+function renderFragranceCarousel(fragrances) {
+  fragranceTrack.innerHTML = fragrances.length ? fragrances.map(productCardMarkup).join('') : '<div class="w-full border border-dashed border-ink/20 px-6 py-12 text-center"><p class="font-display text-3xl">Nenhuma fragrância encontrada.</p><p class="mt-2 text-sm text-ink/60">Tente outro termo de busca.</p></div>';
+  fragranceViewport.scrollLeft = 0;
+  fragranceStatus.textContent = fragrances.length ? `${fragrances.length} fragrância${fragrances.length === 1 ? '' : 's'} na seleção · deslize para explorar.` : 'Ajuste sua busca para explorar a coleção.';
+  requestAnimationFrame(updateFragranceControls);
+}
+
+function renderProducts(category = 'Todos') {
+  activeCategory = category;
+  const visibleProducts = getVisibleProducts(category);
+  resultsCount.textContent = `${visibleProducts.length} ${visibleProducts.length === 1 ? 'peça selecionada' : 'peças selecionadas'}`;
+  const gridProducts = category === 'Todos' ? visibleProducts.filter((product) => product.category === 'Moda') : visibleProducts;
+  productGrid.classList.toggle('hidden', category === 'Perfumaria');
+  productGrid.innerHTML = gridProducts.length ? gridProducts.map(productCardMarkup).join('') : category === 'Perfumaria' ? '' : '<div class="col-span-full border border-dashed border-ink/20 px-6 py-12 text-center"><p class="font-display text-3xl">Nenhuma peça encontrada.</p><p class="mt-2 text-sm text-ink/60">Tente outro nome ou explore todas as categorias.</p></div>';
+  fragranceShowcase.classList.toggle('hidden', category === 'Moda');
+  renderFragranceCarousel(visibleProducts.filter((product) => product.category === 'Perfumaria'));
 }
 
 function saveFavorites() {
@@ -174,8 +207,10 @@ document.querySelectorAll('input[name="family"], input[name="occasion"]').forEac
   const occasion = getChoice('occasion');
   document.querySelector('#quiz-result').innerHTML = `<strong class="text-amber-200">Nossa sugestão:</strong> ${family.toLowerCase()} para ${occasion.toLowerCase()} combina com uma presença autêntica e memorável.`;
 }));
-productGrid.addEventListener('click', (event) => {
-  const favoriteName = event.target.dataset.favorite;
+function handleProductClick(event) {
+  const actionTarget = event.target.closest('[data-favorite], [data-add]');
+  if (!actionTarget) return;
+  const favoriteName = actionTarget.dataset.favorite;
   if (favoriteName) {
     favorites.has(favoriteName) ? favorites.delete(favoriteName) : favorites.add(favoriteName);
     saveFavorites();
@@ -183,7 +218,7 @@ productGrid.addEventListener('click', (event) => {
     renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
     return;
   }
-  const productName = event.target.dataset.add;
+  const productName = actionTarget.dataset.add;
   if (!productName) return;
   const product = products.find((item) => item.name === productName);
   const item = cart.get(productName);
@@ -191,7 +226,9 @@ productGrid.addEventListener('click', (event) => {
   renderCart();
   renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
   toggleCart(true);
-});
+}
+productGrid.addEventListener('click', handleProductClick);
+fragranceTrack.addEventListener('click', handleProductClick);
 favoritesItems.addEventListener('click', (event) => {
   const removeName = event.target.dataset.favoriteRemove;
   const addName = event.target.dataset.favoriteAdd;
@@ -231,6 +268,10 @@ cartOverlay.addEventListener('click', () => { toggleCart(false); toggleFavorites
 document.querySelector('#cart-whatsapp').addEventListener('click', openWhatsApp);
 document.querySelector('#coupon-apply').addEventListener('click', applyCoupon);
 couponInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') applyCoupon(); });
+fragrancePrev.addEventListener('click', () => fragranceViewport.scrollBy({ left: -fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
+fragranceNext.addEventListener('click', () => fragranceViewport.scrollBy({ left: fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
+fragranceViewport.addEventListener('scroll', updateFragranceControls, { passive: true });
+window.addEventListener('resize', updateFragranceControls);
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { toggleCart(false); toggleFavorites(false); } });
 document.querySelector('#whatsapp-button').addEventListener('click', openWhatsApp);
 document.querySelector('#quiz-result').textContent = 'Escolha uma família e uma ocasião para receber uma recomendação personalizada.';

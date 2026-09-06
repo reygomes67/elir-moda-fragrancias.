@@ -67,6 +67,11 @@
           <label class="ml-auto flex items-center gap-2 border border-ink/15 bg-white/60 px-3 text-[10px] font-bold uppercase tracking-[.1em] text-ink/60">Ordenar por <select id="sort-select" class="bg-transparent py-3 font-sans text-xs font-semibold normal-case tracking-normal text-ink outline-none"><option value="default">Mais relevantes</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option></select></label>
         </div>
         <div id="product-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite"></div>
+        <section id="fragrance-showcase" class="mt-16" aria-labelledby="fragrance-title">
+          <div class="mb-6 flex items-end justify-between gap-4"><div><p class="eyebrow mb-2">Notas que ficam</p><h3 id="fragrance-title" class="font-display text-4xl font-semibold">Fragrâncias ELIR</h3></div><div class="flex gap-2"><button id="fragrance-prev" class="carousel-button" type="button" aria-label="Ver fragrância anterior">←</button><button id="fragrance-next" class="carousel-button" type="button" aria-label="Ver próxima fragrância">→</button></div></div>
+          <div id="fragrance-viewport" class="fragrance-viewport" tabindex="0" aria-label="Carrossel de fragrâncias"><div id="fragrance-track" class="fragrance-track"></div></div>
+          <p id="fragrance-status" class="mt-4 text-xs text-ink/50">Deslize para explorar a coleção.</p>
+        </section>
       </div>
     </section>
 
