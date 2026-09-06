@@ -1,4 +1,4 @@
-:root { --ink: #332b27; --amber: #b8873e; --sand: #faf5ed; --cream: #fffaf4; --emerald: #16845b; --lavender: #e5d8eb; }
+:root { --ink: #332b27; --amber: #b8873e; --sand: #faf5ed; --cream: #fffaf4; --emerald: #16845b; --lavender: #e5d8eb; --hero-image: url('https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1800&q=88'); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { font-family: 'Manrope', sans-serif; }
@@ -16,8 +16,11 @@ body { font-family: 'Manrope', sans-serif; }
 .button-outline:hover { background: var(--amber); border-color: var(--amber); color: #fffaf4; }
 #whatsapp-button, #cart-whatsapp { background: var(--emerald); }
 #whatsapp-button:hover, #cart-whatsapp:hover { background: #0f6847; }
-.hero-shell { min-height: 720px; }
-.hero-art { background: #d5b59b; }
+.hero-shell { background-attachment: fixed; background-image: linear-gradient(rgb(25 18 14 / .58), rgb(25 18 14 / .58)), var(--hero-image); background-position: center; background-size: cover; isolation: isolate; min-height: 720px; overflow: hidden; position: relative; }
+.hero-shell::before { background: linear-gradient(90deg, rgb(25 18 14 / .3), transparent 55%, rgb(25 18 14 / .18)); content: ''; inset: 0; pointer-events: none; position: absolute; z-index: -1; }
+.hero-copy { color: #fffaf4; position: relative; z-index: 1; }
+.hero-copy .eyebrow { color: #f1ca81; }
+.hero-copy h1 em { color: #f1ca81; }
 .art-sun { background: #e8c76c; border-radius: 999px; height: 48%; left: 23%; position: absolute; top: 12%; width: 54%; }
 .art-arch { border: 25px solid #f8f2e9; border-bottom: 0; border-radius: 220px 220px 0 0; height: 67%; left: 10%; position: absolute; top: 28%; width: 80%; }
 .art-bottle { background: linear-gradient(110deg, #a86434, #e2b66d 58%, #85502c); border-radius: 12% 12% 28% 28%; bottom: 6%; box-shadow: 16px 22px 30px #75432645; height: 44%; left: 39%; position: absolute; width: 22%; z-index: 2; }
@@ -45,6 +48,17 @@ body { font-family: 'Manrope', sans-serif; }
 .product-icon { color: #fff8ed; font-family: 'Cormorant Garamond', serif; font-size: 5rem; left: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); z-index: 1; }
 .product-tag { background: rgb(255 255 255 / .8); color: var(--ink); font-size: .6rem; font-weight: 700; letter-spacing: .12em; padding: .45rem .6rem; position: absolute; right: .8rem; text-transform: uppercase; top: .8rem; z-index: 2; }
 .product-visual.perfumaria .product-tag { background: var(--lavender); }
+.media-manager-link { border-bottom: 1px solid currentColor; color: var(--ink); font-weight: 700; transition: color .2s ease; }
+.media-manager-link:hover { color: var(--amber); }
+.media-manager { align-items: center; display: flex; inset: 0; justify-content: center; padding: 1.25rem; position: fixed; z-index: 80; }
+.media-manager-backdrop { background: rgb(51 43 39 / .62); inset: 0; position: absolute; }
+.media-manager-panel { background: var(--sand); display: flex; flex-direction: column; max-height: min(90vh, 52rem); max-width: 62rem; position: relative; width: 100%; }
+.media-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.media-item { background: rgb(255 255 255 / .62); border: 1px solid rgb(51 43 39 / .12); }
+.media-item img { aspect-ratio: 16 / 10; background: var(--cream); display: block; object-fit: cover; width: 100%; }
+.media-item-info { padding: 1rem; }
+.media-item-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+.media-item-actions button { flex: 1 1 10rem; }
 .choice-grid { display: flex; flex-wrap: wrap; gap: .6rem; }
 .choice-grid label input { position: absolute; opacity: 0; }
 .choice-grid label span { border: 1px solid rgb(247 241 233 / .25); color: rgb(247 241 233 / .72); cursor: pointer; display: block; font-size: .75rem; padding: .75rem 1rem; transition: all .2s ease; }

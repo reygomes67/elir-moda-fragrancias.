@@ -7,6 +7,13 @@ const products = [
   { name: 'Noite de Cedro', category: 'Perfumaria', price: 249.9, description: 'Rosa escura, cedro e especiarias para momentos inesquecíveis.', tag: 'Intenso', badge: 'Novo', image: 'https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=1200&q=85' }
 ];
 
+const mediaStorageKey = 'elir-media-overrides';
+const mediaOverrides = JSON.parse(localStorage.getItem(mediaStorageKey) || '{}');
+const mediaCatalog = [
+  { key: 'hero', label: 'Banner Hero', description: 'Imagem de fundo da abertura do site.', category: 'Banner', image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1800&q=88' },
+  ...products.map((product) => ({ key: `product-${product.name}`, label: product.name, description: product.description, category: product.category }))
+];
+
 const productGrid = document.querySelector('#product-grid');
 const resultsCount = document.querySelector('#results-count');
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -27,12 +34,18 @@ const couponInput = document.querySelector('#coupon-input');
 const couponFeedback = document.querySelector('#coupon-feedback');
 const sortSelect = document.querySelector('#sort-select');
 const productSearch = document.querySelector('#product-search');
+<<<<<<< HEAD
 const fragranceShowcase = document.querySelector('#fragrance-showcase');
 const fragranceViewport = document.querySelector('#fragrance-viewport');
 const fragranceTrack = document.querySelector('#fragrance-track');
 const fragrancePrev = document.querySelector('#fragrance-prev');
 const fragranceNext = document.querySelector('#fragrance-next');
 const fragranceStatus = document.querySelector('#fragrance-status');
+=======
+const mediaManager = document.querySelector('#media-manager');
+const mediaList = document.querySelector('#media-list');
+const mediaFileInput = document.querySelector('#media-file-input');
+>>>>>>> 5c791e8 (Adiciona Painel Admin para gerenciamento e upload de imagens)
 let appliedCoupon = '';
 let activeSort = 'default';
 let activeSearch = '';
@@ -40,6 +53,61 @@ let activeCategory = 'Todos';
 
 const coupons = { ELIR10: 0.1 };
 const favorites = new Set(JSON.parse(localStorage.getItem('elir-favorites') || '[]'));
+
+function getMediaKey(product) { return `product-${product.name}`; }
+function getMediaSource(item) { return mediaOverrides[item.key] || (item.image || products.find((product) => getMediaKey(product) === item.key)?.image); }
+function saveMediaOverrides() { localStorage.setItem(mediaStorageKey, JSON.stringify(mediaOverrides)); }
+
+function applyHeroImage() {
+  const hero = mediaCatalog[0];
+  document.documentElement.style.setProperty('--hero-image', `url("${getMediaSource(hero)}")`);
+}
+
+function renderMediaManager() {
+  mediaList.innerHTML = mediaCatalog.map((item) => `
+    <article class="media-item">
+      <img src="${getMediaSource(item)}" alt="Prévia: ${item.label}" loading="lazy" onerror="this.style.display='none'" />
+      <div class="media-item-info">
+        <div class="flex items-start justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-[.14em] text-amber">${item.category}</p><h3 class="font-display text-2xl font-semibold leading-none">${item.label}</h3></div>${mediaOverrides[item.key] ? '<span class="text-[10px] font-bold uppercase tracking-[.1em] text-emerald">Personalizada</span>' : '<span class="text-[10px] font-bold uppercase tracking-[.1em] text-ink/45">Padrão</span>'}</div>
+        <p class="mt-2 text-xs leading-5 text-ink/60">${item.description}</p>
+        <div class="media-item-actions"><button class="button-primary px-4 py-3 text-[10px] font-bold uppercase tracking-[.1em]" type="button" data-media-upload="${item.key}">Upload / Trocar imagem</button><button class="button-outline px-4 py-3 text-[10px] font-bold uppercase tracking-[.1em]" type="button" data-media-restore="${item.key}">Restaurar imagem padrão</button></div>
+      </div>
+    </article>`).join('');
+}
+
+function toggleMediaManager(shouldOpen) {
+  mediaManager.classList.toggle('hidden', !shouldOpen);
+  mediaManager.setAttribute('aria-hidden', String(!shouldOpen));
+  document.querySelector('#media-manager-open').setAttribute('aria-expanded', String(shouldOpen));
+  document.body.classList.toggle('overflow-hidden', shouldOpen);
+  if (shouldOpen) renderMediaManager();
+}
+
+function handleMediaUpload(event) {
+  const file = event.target.files[0];
+  const mediaKey = mediaFileInput.dataset.mediaKey;
+  if (!file || !mediaKey) return;
+  const reader = new FileReader();
+  reader.addEventListener('load', () => {
+    mediaOverrides[mediaKey] = reader.result;
+    saveMediaOverrides();
+    applyHeroImage();
+    renderMediaManager();
+    renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
+    renderFavorites();
+  });
+  reader.readAsDataURL(file);
+  mediaFileInput.value = '';
+}
+
+function restoreMedia(mediaKey) {
+  delete mediaOverrides[mediaKey];
+  saveMediaOverrides();
+  applyHeroImage();
+  renderMediaManager();
+  renderProducts(document.querySelector('.filter-button.is-active').dataset.category);
+  renderFavorites();
+}
 
 function getCheckoutTotals() {
   const subtotal = [...cart.values()].reduce((total, item) => total + item.price * item.quantity, 0);
@@ -63,7 +131,7 @@ function productCardMarkup(product, index) {
   return `
     <article class="product-card" style="animation-delay: ${index * 60}ms">
       <div class="product-visual ${product.category.toLowerCase()}">
-        <img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'" />
+        <img class="h-full w-full object-cover transition duration-700 hover:scale-105" src="${getMediaSource({ key: getMediaKey(product), image: product.image })}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'" />
         <span class="product-tag">${product.tag}</span>
         <span class="absolute left-3 top-3 z-10 bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.14em] text-sand">${product.badge}</span>
         <button class="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center bg-white/90 text-xl text-amber shadow-sm transition hover:scale-110" data-favorite="${product.name}" aria-label="${favorites.has(product.name) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}: ${product.name}" aria-pressed="${favorites.has(product.name)}">${favorites.has(product.name) ? '♥' : '♡'}</button>
@@ -105,7 +173,7 @@ function renderFavorites() {
   favoritesCount.textContent = favoriteProducts.length;
   favoritesItems.innerHTML = favoriteProducts.length ? favoriteProducts.map((product) => `
     <article class="mb-4 flex gap-4 border-b border-ink/10 pb-4 last:border-0">
-      <img class="h-24 w-20 object-cover" src="${product.image}" alt="${product.name}" loading="lazy" />
+      <img class="h-24 w-20 object-cover" src="${getMediaSource({ key: getMediaKey(product), image: product.image })}" alt="${product.name}" loading="lazy" />
       <div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><h3 class="font-display text-2xl font-semibold leading-none">${product.name}</h3><button class="text-lg text-ink/50 hover:text-ink" data-favorite-remove="${product.name}" aria-label="Remover ${product.name} dos favoritos">×</button></div><p class="mt-2 text-sm">${money.format(product.price)}</p><button class="button-outline mt-3 px-3 py-2 text-[10px] font-bold uppercase tracking-[.1em]" data-favorite-add="${product.name}">Adicionar ao carrinho</button></div>
     </article>`).join('') : '<div class="flex h-full flex-col items-center justify-center text-center"><p class="font-display text-3xl">Nenhum favorito ainda.</p><p class="mt-2 max-w-xs text-sm leading-6 text-ink/60">Toque no coração dos produtos que combinam com você.</p><button class="button-outline mt-6 px-5 py-3 text-xs font-bold uppercase tracking-[.12em]" data-favorites-continue>Explorar produtos</button></div>';
 }
@@ -268,13 +336,31 @@ cartOverlay.addEventListener('click', () => { toggleCart(false); toggleFavorites
 document.querySelector('#cart-whatsapp').addEventListener('click', openWhatsApp);
 document.querySelector('#coupon-apply').addEventListener('click', applyCoupon);
 couponInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') applyCoupon(); });
+<<<<<<< HEAD
 fragrancePrev.addEventListener('click', () => fragranceViewport.scrollBy({ left: -fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
 fragranceNext.addEventListener('click', () => fragranceViewport.scrollBy({ left: fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
 fragranceViewport.addEventListener('scroll', updateFragranceControls, { passive: true });
 window.addEventListener('resize', updateFragranceControls);
+=======
+document.querySelector('#media-manager-open').addEventListener('click', () => toggleMediaManager(true));
+document.querySelector('#media-manager-close').addEventListener('click', () => toggleMediaManager(false));
+mediaManager.addEventListener('click', (event) => {
+  const uploadKey = event.target.dataset.mediaUpload;
+  const restoreKey = event.target.dataset.mediaRestore;
+  if (event.target.dataset.mediaClose !== undefined) toggleMediaManager(false);
+  if (uploadKey) {
+    mediaFileInput.dataset.mediaKey = uploadKey;
+    mediaFileInput.click();
+  }
+  if (restoreKey) restoreMedia(restoreKey);
+});
+mediaFileInput.addEventListener('change', handleMediaUpload);
+>>>>>>> 5c791e8 (Adiciona Painel Admin para gerenciamento e upload de imagens)
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { toggleCart(false); toggleFavorites(false); } });
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') toggleMediaManager(false); });
 document.querySelector('#whatsapp-button').addEventListener('click', openWhatsApp);
 document.querySelector('#quiz-result').textContent = 'Escolha uma família e uma ocasião para receber uma recomendação personalizada.';
+applyHeroImage();
 renderProducts();
 renderCart();
 renderFavorites();
