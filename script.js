@@ -34,18 +34,15 @@ const couponInput = document.querySelector('#coupon-input');
 const couponFeedback = document.querySelector('#coupon-feedback');
 const sortSelect = document.querySelector('#sort-select');
 const productSearch = document.querySelector('#product-search');
-<<<<<<< HEAD
 const fragranceShowcase = document.querySelector('#fragrance-showcase');
 const fragranceViewport = document.querySelector('#fragrance-viewport');
 const fragranceTrack = document.querySelector('#fragrance-track');
 const fragrancePrev = document.querySelector('#fragrance-prev');
 const fragranceNext = document.querySelector('#fragrance-next');
 const fragranceStatus = document.querySelector('#fragrance-status');
-=======
 const mediaManager = document.querySelector('#media-manager');
 const mediaList = document.querySelector('#media-list');
 const mediaFileInput = document.querySelector('#media-file-input');
->>>>>>> 5c791e8 (Adiciona Painel Admin para gerenciamento e upload de imagens)
 let appliedCoupon = '';
 let activeSort = 'default';
 let activeSearch = '';
@@ -336,12 +333,10 @@ cartOverlay.addEventListener('click', () => { toggleCart(false); toggleFavorites
 document.querySelector('#cart-whatsapp').addEventListener('click', openWhatsApp);
 document.querySelector('#coupon-apply').addEventListener('click', applyCoupon);
 couponInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') applyCoupon(); });
-<<<<<<< HEAD
 fragrancePrev.addEventListener('click', () => fragranceViewport.scrollBy({ left: -fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
 fragranceNext.addEventListener('click', () => fragranceViewport.scrollBy({ left: fragranceViewport.clientWidth * 0.85, behavior: 'smooth' }));
 fragranceViewport.addEventListener('scroll', updateFragranceControls, { passive: true });
 window.addEventListener('resize', updateFragranceControls);
-=======
 document.querySelector('#media-manager-open').addEventListener('click', () => toggleMediaManager(true));
 document.querySelector('#media-manager-close').addEventListener('click', () => toggleMediaManager(false));
 mediaManager.addEventListener('click', (event) => {
@@ -355,7 +350,6 @@ mediaManager.addEventListener('click', (event) => {
   if (restoreKey) restoreMedia(restoreKey);
 });
 mediaFileInput.addEventListener('change', handleMediaUpload);
->>>>>>> 5c791e8 (Adiciona Painel Admin para gerenciamento e upload de imagens)
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { toggleCart(false); toggleFavorites(false); } });
 document.addEventListener('keydown', (event) => { if (event.key === 'Escape') toggleMediaManager(false); });
 document.querySelector('#whatsapp-button').addEventListener('click', openWhatsApp);
